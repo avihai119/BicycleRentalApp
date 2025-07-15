@@ -5,7 +5,9 @@ public class Bicycle {
 
     protected int gearCount;
     protected double weight;
+
     protected Color color;
+
     protected final long id;
     protected boolean isRented;
     protected long renterId;
@@ -17,9 +19,12 @@ public class Bicycle {
         this.color = color;
         this.isRented = false;
     }
-
     public boolean isRented(){
         return isRented;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     public long getId() {

@@ -10,20 +10,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class Server implements Runnable {
+public class Server {
     private int port;
     private ServerSocket serverSocket;
-    private ExecutorService threadPool;
     private Map<String, Object> controllers;
     private boolean isRunning = false;
     private RentalService rentalService;
 
     public Server(int port) {
         this.port = port;
-        this.threadPool = Executors.newFixedThreadPool(10); // Pool of 10 threads
         this.controllers = new HashMap<>();
         initializeServices();
         initializeControllers();
@@ -60,8 +56,8 @@ public class Server implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
+    // This method will be called by the thread
+    public void start() {
         try {
             serverSocket = new ServerSocket(port);
             isRunning = true;
@@ -73,9 +69,9 @@ public class Server implements Runnable {
                     Socket clientSocket = serverSocket.accept();
                     System.out.println("New client connected: " + clientSocket.getInetAddress());
 
-                    // Handle each client request in a separate thread
+                    // Handle each client request directly (no thread pool)
                     HandleRequest requestHandler = new HandleRequest(clientSocket, controllers);
-                    threadPool.execute(requestHandler);
+                    requestHandler.handleRequest();
 
                 } catch (IOException e) {
                     if (isRunning) {
@@ -108,9 +104,6 @@ public class Server implements Runnable {
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
-            }
-            if (threadPool != null && !threadPool.isShutdown()) {
-                threadPool.shutdown();
             }
             System.out.println("Server stopped and resources cleaned up");
         } catch (IOException e) {

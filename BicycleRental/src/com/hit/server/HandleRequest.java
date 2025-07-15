@@ -4,15 +4,19 @@ import com.hit.controller.BicycleController;
 import com.hit.controller.RentalController;
 import com.hit.controller.UserController;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.hit.dao.LocalDateTimeAdapter;
+
 import java.io.*;
 import java.lang.reflect.Type;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Scanner;
 
-public class HandleRequest implements Runnable {
+public class HandleRequest {
     private Socket clientSocket;
     private Map<String, Object> controllers;
     private Gson gson;
@@ -20,28 +24,29 @@ public class HandleRequest implements Runnable {
     public HandleRequest(Socket clientSocket, Map<String, Object> controllers) {
         this.clientSocket = clientSocket;
         this.controllers = controllers;
-        this.gson = new Gson();
+        // Configure Gson properly to match client
+        this.gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .serializeNulls()
+                .create();
     }
 
-    @Override
-    public void run() {
-        try (Scanner reader = new Scanner(new InputStreamReader(clientSocket.getInputStream()));
-             PrintWriter writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true)) {
+    public void handleRequest() {
+        PrintWriter writer = null;
+        Scanner reader = null;
+
+        try {
+            reader = new Scanner(new InputStreamReader(clientSocket.getInputStream()));
+            writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
 
             System.out.println("Processing client request...");
 
-            // Read the JSON request from client
-            StringBuilder jsonRequest = new StringBuilder();
-            while (reader.hasNextLine()) {
-                String line = reader.nextLine();
-                jsonRequest.append(line);
-                // Check if we have a complete JSON object
-                if (line.trim().equals("}") && jsonRequest.toString().trim().startsWith("{")) {
-                    break;
-                }
+            // Read the complete JSON request using Scanner
+            String requestStr = "";
+            if (reader.hasNextLine()) {
+                requestStr = reader.nextLine().trim();
             }
 
-            String requestStr = jsonRequest.toString().trim();
             System.out.println("Received request: " + requestStr);
 
             if (requestStr.isEmpty()) {
@@ -73,8 +78,13 @@ public class HandleRequest implements Runnable {
                 // Send response back to client
                 String jsonResponse = gson.toJson(response);
                 System.out.println("Sending response: " + jsonResponse);
+
+                // Make sure the response is sent completely
                 writer.println(jsonResponse);
                 writer.flush();
+
+                // Small delay to ensure data is sent
+                Thread.sleep(10);
 
             } catch (Exception e) {
                 System.err.println("Error processing request: " + e.getMessage());
@@ -82,11 +92,21 @@ public class HandleRequest implements Runnable {
                 sendErrorResponse(writer, "Error processing request: " + e.getMessage());
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println("Error handling client request: " + e.getMessage());
+            e.printStackTrace();
         } finally {
+            // Clean up resources
             try {
-                clientSocket.close();
+                if (writer != null) {
+                    writer.close();
+                }
+                if (reader != null) {
+                    reader.close();
+                }
+                if (clientSocket != null && !clientSocket.isClosed()) {
+                    clientSocket.close();
+                }
             } catch (IOException e) {
                 System.err.println("Error closing client socket: " + e.getMessage());
             }
@@ -103,27 +123,30 @@ public class HandleRequest implements Runnable {
         String controllerName = actionParts[0].toLowerCase();
 
         try {
+            // Ensure requestBody is never null
+            JsonObject body = requestBody != null ? requestBody : new JsonObject();
+
             switch (controllerName) {
                 case "bicycle":
                     BicycleController bicycleController = (BicycleController) controllers.get("bicyclecontroller");
                     if (bicycleController == null) {
                         return createErrorResponse("Bicycle controller not found");
                     }
-                    return bicycleController.handleRequest(action, requestBody != null ? requestBody : new JsonObject());
+                    return bicycleController.handleRequest(action, body);
 
                 case "rental":
                     RentalController rentalController = (RentalController) controllers.get("rentalcontroller");
                     if (rentalController == null) {
                         return createErrorResponse("Rental controller not found");
                     }
-                    return rentalController.handleRequest(action, requestBody != null ? requestBody : new JsonObject());
+                    return rentalController.handleRequest(action, body);
 
                 case "user":
                     UserController userController = (UserController) controllers.get("usercontroller");
                     if (userController == null) {
                         return createErrorResponse("User controller not found");
                     }
-                    return userController.handleRequest(action, requestBody != null ? requestBody : new JsonObject());
+                    return userController.handleRequest(action, body);
 
                 default:
                     return createErrorResponse("Unknown controller: " + controllerName);
@@ -141,9 +164,15 @@ public class HandleRequest implements Runnable {
     }
 
     private void sendErrorResponse(PrintWriter writer, String errorMessage) {
-        Response<String> errorResponse = createErrorResponse(errorMessage);
-        String jsonResponse = gson.toJson(errorResponse);
-        writer.println(jsonResponse);
-        writer.flush();
+        try {
+            Response<String> errorResponse = createErrorResponse(errorMessage);
+            String jsonResponse = gson.toJson(errorResponse);
+            System.out.println("Sending error response: " + jsonResponse);
+            writer.println(jsonResponse);
+            writer.flush();
+            Thread.sleep(10); // Ensure data is sent
+        } catch (Exception e) {
+            System.err.println("Error sending error response: " + e.getMessage());
+        }
     }
 }

@@ -22,6 +22,7 @@ public class ServerCommunicationService {
         this.gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .serializeNulls() // IMPORTANT: This ensures null values are included in JSON
                 .create();
     }
 
@@ -33,7 +34,10 @@ public class ServerCommunicationService {
             // Create request
             Map<String, String> headers = new HashMap<>();
             headers.put("action", action);
-            Request<Object> request = new Request<>(headers, requestBody);
+
+            // Ensure body is never null - use empty object if null
+            Object body = requestBody != null ? requestBody : new HashMap<String, Object>();
+            Request<Object> request = new Request<>(headers, body);
 
             // Send request
             String jsonRequest = gson.toJson(request);
@@ -57,6 +61,7 @@ public class ServerCommunicationService {
             return createErrorResponse("Failed to connect to server: " + e.getMessage());
         } catch (Exception e) {
             System.err.println("Error processing request: " + e.getMessage());
+            e.printStackTrace();
             return createErrorResponse("Error processing request: " + e.getMessage());
         }
     }

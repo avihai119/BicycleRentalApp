@@ -1,0 +1,138 @@
+{
+  "bicycles": {
+    "101": {
+      "brand": "Trek Mountain Bike",
+      "gearCount": 21,
+      "weight": 12.5,
+      "color": "BLUE",
+      "id": 101,
+      "isRented": false,
+      "renterId": 0
+    },
+    "102": {
+      "brand": "Giant Road Bike",
+      "gearCount": 18,
+      "weight": 11.0,
+      "color": "RED",
+      "id": 102,
+      "isRented": false,
+      "renterId": 0
+    },
+    "103": {
+      "brand": "Specialized Hybrid",
+      "gearCount": 24,
+      "weight": 13.2,
+      "color": "BLACK",
+      "id": 103,
+      "isRented": false,
+      "renterId": 0
+    },
+    "104": {
+      "brand": "Cannondale Trail",
+      "gearCount": 27,
+      "weight": 14.0,
+      "color": "WHITE",
+      "id": 104,
+      "isRented": false,
+      "renterId": 0
+    },
+    "105": {
+      "brand": "Scott City Bike",
+      "gearCount": 7,
+      "weight": 10.5,
+      "color": "BLUE",
+      "id": 105,
+      "isRented": false,
+      "renterId": 0
+    },
+    "201": {
+      "batteryCapacity": 500,
+      "range": 80,
+      "hasPedalAssist": true,
+      "brand": "E-Trek Pro",
+      "gearCount": 10,
+      "weight": 18.5,
+      "color": "RED",
+      "id": 201,
+      "isRented": false,
+      "renterId": 0
+    },
+    "106": {
+      "brand": "GT Mountain",
+      "gearCount": 21,
+      "weight": 13.8,
+      "color": "RED",
+      "id": 106,
+      "isRented": false,
+      "renterId": 0
+    },
+    "202": {
+      "batteryCapacity": 400,
+      "range": 60,
+      "hasPedalAssist": true,
+      "brand": "E-Giant Urban",
+      "gearCount": 8,
+      "weight": 20.0,
+      "color": "BLACK",
+      "id": 202,
+      "isRented": false,
+      "renterId": 0
+    },
+    "107": {
+      "brand": "Merida Road",
+      "gearCount": 16,
+      "weight": 9.8,
+      "color": "BLACK",
+      "id": 107,
+      "isRented": false,
+      "renterId": 0
+    },
+    "203": {
+      "batteryCapacity": 600,
+      "range": 100,
+      "hasPedalAssist": true,
+      "brand": "E-Specialized",
+      "gearCount": 12,
+      "weight": 19.2,
+      "color": "WHITE",
+      "id": 203,
+      "isRented": false,
+      "renterId": 0
+    },
+    "108": {
+      "brand": "Cube Hybrid",
+      "gearCount": 24,
+      "weight": 12.0,
+      "color": "WHITE",
+      "id": 108,
+      "isRented": false,
+      "renterId": 0
+    },
+    "204": {
+      "batteryCapacity": 450,
+      "range": 70,
+      "hasPedalAssist": true,
+      "brand": "E-Cannondale",
+      "gearCount": 9,
+      "weight": 17.8,
+      "color": "BLUE",
+      "id": 204,
+      "isRented": false,
+      "renterId": 0
+    },
+    "205": {
+      "batteryCapacity": 520,
+      "range": 85,
+      "hasPedalAssist": true,
+      "brand": "E-Scott Urban",
+      "gearCount": 7,
+      "weight": 19.5,
+      "color": "RED",
+      "id": 205,
+      "isRented": false,
+      "renterId": 0
+    }
+  },
+  "users": {},
+  "rentals": {}
+}
