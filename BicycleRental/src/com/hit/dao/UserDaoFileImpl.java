@@ -13,12 +13,9 @@ public class UserDaoFileImpl implements IDao<Long, User> {
 
     @Override
     public void save(User user) {
-        if (!dataManager.getDataContainer().getUsers().containsKey(user.getId())) {
-            dataManager.getDataContainer().getUsers().put(user.getId(), user);
-            dataManager.saveData();
-        } else {
-            throw new IllegalStateException("User already exists in the database!");
-        }
+        // Allow updating existing users (overwrite if exists)
+        dataManager.getDataContainer().getUsers().put(user.getId(), user);
+        dataManager.saveData();
     }
 
     @Override

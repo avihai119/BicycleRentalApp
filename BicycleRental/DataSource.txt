@@ -133,6 +133,82 @@
       "renterId": 0
     }
   },
-  "users": {},
-  "rentals": {}
+  "users": {
+    "318422474": {
+      "id": 318422474,
+      "name": "User 318422474",
+      "age": 25
+    },
+    "1": {
+      "id": 1,
+      "name": "User 1",
+      "age": 25
+    },
+    "2": {
+      "id": 2,
+      "name": "User 2",
+      "age": 25
+    },
+    "3": {
+      "id": 3,
+      "name": "User 3",
+      "age": 25
+    },
+    "5": {
+      "id": 5,
+      "name": "User 5",
+      "age": 25
+    }
+  },
+  "rentals": {
+    "1": {
+      "rentalId": 1,
+      "userId": 318422474,
+      "bicycleId": 101,
+      "startTime": "2025-07-15T11:44:17.6846103",
+      "endTime": "2025-07-15T11:44:39.3579521"
+    },
+    "2": {
+      "rentalId": 2,
+      "userId": 1,
+      "bicycleId": 102,
+      "startTime": "2025-07-15T11:45:29.3098054",
+      "endTime": "2025-07-15T11:46:07.6496594"
+    },
+    "3": {
+      "rentalId": 3,
+      "userId": 1,
+      "bicycleId": 204,
+      "startTime": "2025-07-15T11:48:43.4936574",
+      "endTime": "2025-07-15T11:49:02.6559319"
+    },
+    "4": {
+      "rentalId": 4,
+      "userId": 1,
+      "bicycleId": 101,
+      "startTime": "2025-07-15T11:49:19.2314554",
+      "endTime": "2025-07-15T11:50:58.8097925"
+    },
+    "5": {
+      "rentalId": 5,
+      "userId": 2,
+      "bicycleId": 201,
+      "startTime": "2025-07-15T11:49:23.7687074",
+      "endTime": "2025-07-15T11:51:13.8011711"
+    },
+    "6": {
+      "rentalId": 6,
+      "userId": 3,
+      "bicycleId": 102,
+      "startTime": "2025-07-15T11:49:28.71802",
+      "endTime": "2025-07-15T11:51:20.3294972"
+    },
+    "7": {
+      "rentalId": 7,
+      "userId": 5,
+      "bicycleId": 205,
+      "startTime": "2025-07-15T11:50:04.94981",
+      "endTime": "2025-07-15T11:51:23.6837226"
+    }
+  }
 }

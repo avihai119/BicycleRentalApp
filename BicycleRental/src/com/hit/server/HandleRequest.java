@@ -6,11 +6,11 @@ import com.hit.controller.UserController;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.hit.dao.LocalDateTimeAdapter;
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -33,67 +33,123 @@ public class HandleRequest {
 
     public void handleRequest() {
         PrintWriter writer = null;
-        Scanner reader = null;
+        BufferedReader reader = null;
 
         try {
-            reader = new Scanner(new InputStreamReader(clientSocket.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
 
-            System.out.println("Processing client request...");
+            System.out.println("🔗 Processing client request...");
 
-            // Read the complete JSON request using Scanner
-            String requestStr = "";
-            if (reader.hasNextLine()) {
-                requestStr = reader.nextLine().trim();
+            // Read the complete JSON request - handle potential multi-line JSON
+            StringBuilder jsonBuilder = new StringBuilder();
+            String line;
+            int braceCount = 0;
+            boolean inString = false;
+            boolean escapeNext = false;
+
+            // Read character by character to properly handle JSON
+            int ch;
+            while ((ch = reader.read()) != -1) {
+                char c = (char) ch;
+                jsonBuilder.append(c);
+
+                if (escapeNext) {
+                    escapeNext = false;
+                    continue;
+                }
+
+                if (c == '\\' && inString) {
+                    escapeNext = true;
+                    continue;
+                }
+
+                if (c == '"' && !escapeNext) {
+                    inString = !inString;
+                    continue;
+                }
+
+                if (!inString) {
+                    if (c == '{') {
+                        braceCount++;
+                    } else if (c == '}') {
+                        braceCount--;
+                        if (braceCount == 0) {
+                            break; // Complete JSON object received
+                        }
+                    }
+                }
             }
 
-            System.out.println("Received request: " + requestStr);
+            String requestStr = jsonBuilder.toString().trim();
 
             if (requestStr.isEmpty()) {
+                System.out.println("❌ Empty request received");
                 sendErrorResponse(writer, "Empty request received");
                 return;
             }
 
-            try {
-                // Parse the request
-                Type requestType = new TypeToken<Request<JsonObject>>(){}.getType();
-                Request<JsonObject> request = gson.fromJson(requestStr, requestType);
+            System.out.println("📨 Received request: " + requestStr);
 
-                if (request == null || request.getHeaders() == null) {
-                    sendErrorResponse(writer, "Invalid request format");
+            try {
+                // Parse the request JSON step by step
+                JsonObject requestJson;
+                try {
+                    requestJson = JsonParser.parseString(requestStr).getAsJsonObject();
+                } catch (JsonSyntaxException e) {
+                    System.err.println("❌ Invalid JSON syntax: " + e.getMessage());
+                    sendErrorResponse(writer, "Invalid JSON format");
                     return;
                 }
 
-                String action = request.getAction();
-                if (action == null) {
+                // Extract headers safely
+                JsonObject headers = new JsonObject();
+                if (requestJson.has("headers") && requestJson.get("headers").isJsonObject()) {
+                    headers = requestJson.getAsJsonObject("headers");
+                }
+
+                // Extract body safely - always create a valid JsonObject
+                JsonObject body = new JsonObject();
+                if (requestJson.has("body")) {
+                    if (requestJson.get("body").isJsonObject()) {
+                        body = requestJson.getAsJsonObject("body");
+                    } else if (requestJson.get("body").isJsonNull()) {
+                        body = new JsonObject(); // Empty object for null body
+                    }
+                }
+
+                // Get action from headers
+                String action = null;
+                if (headers.has("action")) {
+                    action = headers.get("action").getAsString();
+                }
+
+                if (action == null || action.isEmpty()) {
+                    System.out.println("❌ No action specified in request");
                     sendErrorResponse(writer, "No action specified in request");
                     return;
                 }
 
-                System.out.println("Processing action: " + action);
+                System.out.println("🚀 Processing action: " + action);
 
                 // Route the request to appropriate controller
-                Response<?> response = routeRequest(action, request.getBody());
+                Response<?> response = routeRequest(action, body);
 
                 // Send response back to client
                 String jsonResponse = gson.toJson(response);
-                System.out.println("Sending response: " + jsonResponse);
+                System.out.println("📤 Sending response: " + jsonResponse);
 
-                // Make sure the response is sent completely
                 writer.println(jsonResponse);
                 writer.flush();
 
-                // Small delay to ensure data is sent
-                Thread.sleep(10);
-
             } catch (Exception e) {
-                System.err.println("Error processing request: " + e.getMessage());
+                System.err.println("❌ Error processing request: " + e.getMessage());
                 e.printStackTrace();
                 sendErrorResponse(writer, "Error processing request: " + e.getMessage());
             }
 
         } catch (Exception e) {
-            System.err.println("Error handling client request: " + e.getMessage());
+            System.err.println("❌ Error handling client request: " + e.getMessage());
             e.printStackTrace();
         } finally {
             // Clean up resources
@@ -108,7 +164,7 @@ public class HandleRequest {
                     clientSocket.close();
                 }
             } catch (IOException e) {
-                System.err.println("Error closing client socket: " + e.getMessage());
+                System.err.println("❌ Error closing client socket: " + e.getMessage());
             }
         }
     }
@@ -130,30 +186,37 @@ public class HandleRequest {
                 case "bicycle":
                     BicycleController bicycleController = (BicycleController) controllers.get("bicyclecontroller");
                     if (bicycleController == null) {
+                        System.err.println("❌ Bicycle controller not found");
                         return createErrorResponse("Bicycle controller not found");
                     }
+                    System.out.println("🚲 Routing to bicycle controller");
                     return bicycleController.handleRequest(action, body);
 
                 case "rental":
                     RentalController rentalController = (RentalController) controllers.get("rentalcontroller");
                     if (rentalController == null) {
+                        System.err.println("❌ Rental controller not found");
                         return createErrorResponse("Rental controller not found");
                     }
+                    System.out.println("🏠 Routing to rental controller");
                     return rentalController.handleRequest(action, body);
 
                 case "user":
                     UserController userController = (UserController) controllers.get("usercontroller");
                     if (userController == null) {
+                        System.err.println("❌ User controller not found");
                         return createErrorResponse("User controller not found");
                     }
+                    System.out.println("👤 Routing to user controller");
                     return userController.handleRequest(action, body);
 
                 default:
+                    System.err.println("❌ Unknown controller: " + controllerName);
                     return createErrorResponse("Unknown controller: " + controllerName);
             }
 
         } catch (Exception e) {
-            System.err.println("Error routing request: " + e.getMessage());
+            System.err.println("❌ Error routing request: " + e.getMessage());
             e.printStackTrace();
             return createErrorResponse("Error processing request: " + e.getMessage());
         }
@@ -167,12 +230,11 @@ public class HandleRequest {
         try {
             Response<String> errorResponse = createErrorResponse(errorMessage);
             String jsonResponse = gson.toJson(errorResponse);
-            System.out.println("Sending error response: " + jsonResponse);
+            System.out.println("📤 Sending error response: " + jsonResponse);
             writer.println(jsonResponse);
             writer.flush();
-            Thread.sleep(10); // Ensure data is sent
         } catch (Exception e) {
-            System.err.println("Error sending error response: " + e.getMessage());
+            System.err.println("❌ Error sending error response: " + e.getMessage());
         }
     }
 }

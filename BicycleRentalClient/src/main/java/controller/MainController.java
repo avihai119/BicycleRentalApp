@@ -37,7 +37,8 @@ public class MainController {
 
     @FXML
     private void handleReturnBicycle() {
-        openWindow("/fxml/return-bicycle.fxml", "Return Bicycle", 400, 300);
+        // Increased height from 300 to 450 to accommodate all content
+        openWindow("/fxml/return-bicycle.fxml", "Return Bicycle", 450, 450);
     }
 
     @FXML
