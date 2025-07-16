@@ -1,0 +1,226 @@
+{
+  "bicycles": {
+    "101": {
+      "brand": "Trek Mountain Bike",
+      "gearCount": 21,
+      "weight": 12.5,
+      "color": "BLUE",
+      "id": 101,
+      "isRented": false,
+      "renterId": 0
+    },
+    "102": {
+      "brand": "Giant Road Bike",
+      "gearCount": 18,
+      "weight": 11.0,
+      "color": "RED",
+      "id": 102,
+      "isRented": false,
+      "renterId": 0
+    },
+    "103": {
+      "brand": "Specialized Hybrid",
+      "gearCount": 24,
+      "weight": 13.2,
+      "color": "BLACK",
+      "id": 103,
+      "isRented": false,
+      "renterId": 0
+    },
+    "104": {
+      "brand": "Cannondale Trail",
+      "gearCount": 27,
+      "weight": 14.0,
+      "color": "WHITE",
+      "id": 104,
+      "isRented": false,
+      "renterId": 0
+    },
+    "105": {
+      "brand": "Scott City Bike",
+      "gearCount": 7,
+      "weight": 10.5,
+      "color": "BLUE",
+      "id": 105,
+      "isRented": false,
+      "renterId": 0
+    },
+    "201": {
+      "batteryCapacity": 500,
+      "range": 80,
+      "hasPedalAssist": true,
+      "brand": "E-Trek Pro",
+      "gearCount": 10,
+      "weight": 18.5,
+      "color": "RED",
+      "id": 201,
+      "isRented": false,
+      "renterId": 0
+    },
+    "106": {
+      "brand": "GT Mountain",
+      "gearCount": 21,
+      "weight": 13.8,
+      "color": "RED",
+      "id": 106,
+      "isRented": false,
+      "renterId": 0
+    },
+    "202": {
+      "batteryCapacity": 400,
+      "range": 60,
+      "hasPedalAssist": true,
+      "brand": "E-Giant Urban",
+      "gearCount": 8,
+      "weight": 20.0,
+      "color": "BLACK",
+      "id": 202,
+      "isRented": false,
+      "renterId": 0
+    },
+    "107": {
+      "brand": "Merida Road",
+      "gearCount": 16,
+      "weight": 9.8,
+      "color": "BLACK",
+      "id": 107,
+      "isRented": false,
+      "renterId": 0
+    },
+    "203": {
+      "batteryCapacity": 600,
+      "range": 100,
+      "hasPedalAssist": true,
+      "brand": "E-Specialized",
+      "gearCount": 12,
+      "weight": 19.2,
+      "color": "WHITE",
+      "id": 203,
+      "isRented": false,
+      "renterId": 0
+    },
+    "108": {
+      "brand": "Cube Hybrid",
+      "gearCount": 24,
+      "weight": 12.0,
+      "color": "WHITE",
+      "id": 108,
+      "isRented": false,
+      "renterId": 0
+    },
+    "204": {
+      "batteryCapacity": 450,
+      "range": 70,
+      "hasPedalAssist": true,
+      "brand": "E-Cannondale",
+      "gearCount": 9,
+      "weight": 17.8,
+      "color": "BLUE",
+      "id": 204,
+      "isRented": false,
+      "renterId": 0
+    },
+    "205": {
+      "batteryCapacity": 520,
+      "range": 85,
+      "hasPedalAssist": true,
+      "brand": "E-Scott Urban",
+      "gearCount": 7,
+      "weight": 19.5,
+      "color": "RED",
+      "id": 205,
+      "isRented": false,
+      "renterId": 0
+    }
+  },
+  "users": {
+    "1": {
+      "id": 1,
+      "name": "User 1",
+      "age": 25
+    },
+    "2": {
+      "id": 2,
+      "name": "User 2",
+      "age": 25
+    },
+    "1245434": {
+      "id": 1245434,
+      "name": "User 1245434",
+      "age": 25
+    },
+    "43": {
+      "id": 43,
+      "name": "User 43",
+      "age": 25
+    },
+    "422": {
+      "id": 422,
+      "name": "User 422",
+      "age": 25
+    },
+    "78797": {
+      "id": 78797,
+      "name": "User 78797",
+      "age": 25
+    }
+  },
+  "rentals": {
+    "1": {
+      "rentalId": 1,
+      "userId": 1,
+      "bicycleId": 102,
+      "startTime": "2025-07-15T21:45:16.8967736",
+      "endTime": "2025-07-15T21:45:23.7819167"
+    },
+    "2": {
+      "rentalId": 2,
+      "userId": 2,
+      "bicycleId": 105,
+      "startTime": "2025-07-15T21:46:00.6948521",
+      "endTime": "2025-07-15T21:46:18.6559161"
+    },
+    "3": {
+      "rentalId": 3,
+      "userId": 1,
+      "bicycleId": 101,
+      "startTime": "2025-07-16T21:36:02.1336946",
+      "endTime": "2025-07-16T21:36:36.761412"
+    },
+    "4": {
+      "rentalId": 4,
+      "userId": 1245434,
+      "bicycleId": 101,
+      "startTime": "2025-07-16T21:39:01.4982246",
+      "endTime": "2025-07-16T21:39:13.2646906"
+    },
+    "5": {
+      "rentalId": 5,
+      "userId": 1,
+      "bicycleId": 101,
+      "startTime": "2025-07-16T22:00:35.6633393",
+      "endTime": "2025-07-16T22:00:51.654865"
+    },
+    "6": {
+      "rentalId": 6,
+      "userId": 43,
+      "bicycleId": 201,
+      "startTime": "2025-07-16T22:01:04.4121243",
+      "endTime": "2025-07-16T22:01:37.9783682"
+    },
+    "7": {
+      "rentalId": 7,
+      "userId": 422,
+      "bicycleId": 104,
+      "startTime": "2025-07-16T22:01:08.840621",
+      "endTime": "2025-07-16T22:02:19.6110644"
+    },
+    "8": {
+      "rentalId": 8,
+      "userId": 78797,
+      "bicycleId": 101,
+      "startTime": "2025-07-16T22:01:13.2927887",
+      "endTime": "2025-07-16T22:02:22.6987291"
+    }
+  }
+}
